@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CORS 测试</title>
+  </head>
+  <body>
+    <h1>CORS 工作原理测试</h1>
+    <button onclick="testWithCORS()">测试有 CORS 的请求</button>
+    <button onclick="testWithoutCORS()">测试没有 CORS 的请求</button>
+    <div id="result"></div>
+
+    <script>
+      // 测试您的后端服务器（有 CORS）
+      async function testWithCORS() {
+        try {
+          console.log("发送请求到有 CORS 的服务器...");
+          const response = await fetch("http://localhost:3001/api/students");
+          console.log("收到响应，状态码:", response.status);
+          const data = await response.json();
+          console.log("成功获取数据:", data);
+          document.getElementById("result").innerHTML =
+            '<p style="color: green;">✅ 有 CORS：请求成功，数据获取成功</p>';
+        } catch (error) {
+          console.error("请求失败:", error);
+          document.getElementById("result").innerHTML =
+            '<p style="color: red;">❌ 有 CORS：请求失败 - ' +
+            error.message +
+            "</p>";
+        }
+      }
+
+      // 测试一个没有 CORS 的服务器
+      async function testWithoutCORS() {
+        try {
+          console.log("发送请求到没有 CORS 的服务器...");
+          // 这个请求会发送到服务器，但浏览器会阻止 JavaScript 访问响应
+          const response = await fetch("http://localhost:3002/api/test");
+          console.log("收到响应，状态码:", response.status);
+          const data = await response.json();
+          console.log("数据:", data);
+          document.getElementById("result").innerHTML =
+            '<p style="color: green;">✅ 没有 CORS：请求成功（这个网站实际上有 CORS）</p>';
+        } catch (error) {
+          console.error("CORS 错误:", error);
+          document.getElementById("result").innerHTML =
+            '<p style="color: red;">❌ 没有 CORS：CORS 策略阻止了访问响应 - ' +
+            error.message +
+            "</p>";
+        }
+      }
+    </script>
+  </body>
+</html>
